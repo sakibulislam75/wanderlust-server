@@ -17,6 +17,18 @@ const run = async () => {
    // ❌ export CommonJS এ কাজ করে না
    try {
       await client.connect();
+
+      const db = client.db('wanderlust');
+      const destinationsCollection = db.collection('destinations');
+
+      //add-destination
+      app.post('/destination', async (req, res) => {
+         const destination = req.body;
+         const result = await destinationsCollection.insertOne(destination);
+         console.log('Successfully added a destination', result);
+         res.send(result);
+      });
+
       console.log('You successfully connected to MongoDB!');
       return client;
    } catch (err) {
