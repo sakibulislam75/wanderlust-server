@@ -21,6 +21,12 @@ const run = async () => {
       const db = client.db('wanderlust');
       const destinationsCollection = db.collection('destinations');
 
+      //get-destination
+      app.get('/destination', async (req, res) => {
+         const result = await destinationsCollection.find().toArray();
+         console.log('Successfully got all destinations', result);
+         res.send(result);
+      });
       //add-destination
       app.post('/destination', async (req, res) => {
          const destination = req.body;
