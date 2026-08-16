@@ -27,6 +27,14 @@ const run = async () => {
          console.log('Successfully got all destinations', result);
          res.send(result);
       });
+      //single-destination
+      app.get('/destination/:id', async (req, res) => {
+         const { id } = req.params;
+         const query = { _id: new ObjectId(id) };
+         const result = await destinationsCollection.findOne(query);
+         res.send(result);
+      });
+
       //add-destination
       app.post('/destination', async (req, res) => {
          const destination = req.body;
