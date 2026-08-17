@@ -43,6 +43,18 @@ const run = async () => {
          res.send(result);
       });
 
+      //update-destination packages
+      app.patch('/destination/:id', async (req, res) => {
+         const { id } = req.params;
+         const updateData = req.body;
+         const result = await destinationsCollection.updateOne(
+            { _id: new ObjectId(id) },
+            { $set: updateData },
+         );
+         console.log('Sucessfully updated a package:', result);
+         res.send(result);
+      });
+
       console.log('You successfully connected to MongoDB!');
       return client;
    } catch (err) {
