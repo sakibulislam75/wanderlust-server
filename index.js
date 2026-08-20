@@ -78,6 +78,13 @@ const run = async () => {
          console.log('Successfully got all bookings', result);
          res.send(result);
       });
+      //delete-booking
+      app.delete('/booking/:id', async (req, res) => {
+         const { id } = req.params;
+         const result = await bookingCollection.deleteOne({ _id: new ObjectId(id) });
+         console.log('Successfully deleted a booking', result);
+         res.send(result);
+      });
 
       console.log('You successfully connected to MongoDB!');
       return client;
