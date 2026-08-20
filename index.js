@@ -20,6 +20,7 @@ const run = async () => {
 
       const db = client.db('wanderlust');
       const destinationsCollection = db.collection('destinations');
+      const bookingCollection = db.collection('bookings');
 
       //get-destination
       app.get('/destination', async (req, res) => {
@@ -60,6 +61,14 @@ const run = async () => {
          const { id } = req.params;
          const result = await destinationsCollection.deleteOne({ _id: new ObjectId(id) });
          console.log('Successfully deleted a package', result);
+         res.send(result);
+      });
+
+      //add-booking
+      app.post('/booking', async (req, res) => {
+         const booking = req.body;
+         const result = await bookingCollection.insertOne(booking);
+         console.log('Successfully added a booking', result);
          res.send(result);
       });
 
