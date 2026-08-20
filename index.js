@@ -72,6 +72,13 @@ const run = async () => {
          res.send(result);
       });
 
+      //get-bookings
+      app.get('/booking', async (req, res) => {
+         const result = await bookingCollection.find().toArray();
+         console.log('Successfully got all bookings', result);
+         res.send(result);
+      });
+
       console.log('You successfully connected to MongoDB!');
       return client;
    } catch (err) {
