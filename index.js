@@ -70,7 +70,7 @@ const run = async () => {
       });
 
       //update-destination packages
-      app.patch('/destination/:id', async (req, res) => {
+      app.patch('/destination/:id', verifyToken, async (req, res) => {
          const { id } = req.params;
          const updateData = req.body;
          const result = await destinationsCollection.updateOne(
