@@ -104,7 +104,7 @@ const run = async () => {
          res.send(result);
       });
       //delete-booking
-      app.delete('/booking/:id', async (req, res) => {
+      app.delete('/booking/:id', verifyToken, async (req, res) => {
          const { id } = req.params;
          const result = await bookingCollection.deleteOne({ _id: id });
          console.log('Successfully deleted a booking', result);
