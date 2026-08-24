@@ -62,7 +62,7 @@ const run = async () => {
       });
 
       //add-destination
-      app.post('/destination', async (req, res) => {
+      app.post('/destination', verifyToken, async (req, res) => {
          const destination = req.body;
          const result = await destinationsCollection.insertOne(destination);
          console.log('Successfully added a destination', result);
