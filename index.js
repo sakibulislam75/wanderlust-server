@@ -82,7 +82,7 @@ const run = async () => {
       });
 
       //delete-destinaiton package
-      app.delete('/destination/:id', async (req, res) => {
+      app.delete('/destination/:id', verifyToken, async (req, res) => {
          const { id } = req.params;
          const result = await destinationsCollection.deleteOne({ _id: new ObjectId(id) });
          console.log('Successfully deleted a package', result);
