@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const { MongoClient, ObjectId } = require('mongodb');
+const { createRemoteJWKSet, jwtVerify } = require('jose-cjs');
 
 dotenv.config();
 
@@ -12,6 +13,30 @@ app.use(express.json());
 
 const port = process.env.PORT;
 const client = new MongoClient(process.env.MONGODB_URI);
+
+//middleware
+const JWKS = createRemoteJWKSet(new URL('http://localhost:3000/api/auth/jwks'));
+
+//middleware-function
+const verifyToken = async (req, res, next) => {
+   const authHeader = req?.headers.authorization;
+   if (!authHeader) {
+      return res.status(401).send({ message: 'unauthorized access' });
+   }
+
+   const token = authHeader.split(' ')[1];
+   if (!token) {
+      return res.status(401).send({ message: 'unauthorized access' });
+   }
+
+   try {
+      const { payload } = await jwtVerify(token, JWKS);
+      console.log('JWT payload:', payload);
+      next();
+   } catch (error) {
+      return res.status(403).send({ message: 'forbidden' });
+   }
+};
 
 const run = async () => {
    // ❌ export CommonJS এ কাজ করে না
@@ -28,8 +53,8 @@ const run = async () => {
          console.log('Successfully got all destinations', result);
          res.send(result);
       });
-      //single-destination
-      app.get('/destination/:id', async (req, res) => {
+      //single-destination-middleware
+      app.get('/destination/:id', verifyToken, async (req, res) => {
          const { id } = req.params;
          const query = { _id: new ObjectId(id) };
          const result = await destinationsCollection.findOne(query);
@@ -65,7 +90,7 @@ const run = async () => {
       });
 
       //add-booking
-      app.post('/booking', async (req, res) => {
+      app.post('/booking', verifyToken, async (req, res) => {
          const booking = req.body;
          const result = await bookingCollection.insertOne(booking);
          console.log('Successfully added a booking', result);
@@ -81,7 +106,7 @@ const run = async () => {
       //delete-booking
       app.delete('/booking/:id', async (req, res) => {
          const { id } = req.params;
-         const result = await bookingCollection.deleteOne({ _id: new ObjectId(id) });
+         const result = await bookingCollection.deleteOne({ _id: id });
          console.log('Successfully deleted a booking', result);
          res.send(result);
       });
