@@ -15,7 +15,7 @@ const port = process.env.PORT;
 const client = new MongoClient(process.env.MONGODB_URI);
 
 //middleware
-const JWKS = createRemoteJWKSet(new URL('http://localhost:3000/api/auth/jwks'));
+const JWKS = createRemoteJWKSet(new URL(`${process.env.CLIENT_URL}/api/auth/jwks`));
 
 //middleware-function
 const verifyToken = async (req, res, next) => {
@@ -98,7 +98,7 @@ const run = async () => {
       });
 
       //get-bookings
-      app.get('/booking', async (req, res) => {
+      app.get('/booking', verifyToken, async (req, res) => {
          const result = await bookingCollection.find().toArray();
          console.log('Successfully got all bookings', result);
          res.send(result);
@@ -125,5 +125,5 @@ app.get('/', (req, res) => {
 });
 
 app.listen(port, () => {
-   console.log(`server is running on port ${port}`);
+   console.log(`server is running `);
 });
