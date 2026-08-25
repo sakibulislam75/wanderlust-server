@@ -41,7 +41,7 @@ const verifyToken = async (req, res, next) => {
 const run = async () => {
    // ❌ export CommonJS এ কাজ করে না
    try {
-      await client.connect();
+      // await client.connect();
 
       const db = client.db('wanderlust');
       const destinationsCollection = db.collection('destinations');
