@@ -10,6 +10,12 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(
+   cors({
+      origin: process.env.CLIENT_URL, // যেমন https://wanderlust-client-tau-two.vercel.app
+      credentials: true,
+   }),
+);
 
 const port = process.env.PORT;
 const client = new MongoClient(process.env.MONGODB_URI);
